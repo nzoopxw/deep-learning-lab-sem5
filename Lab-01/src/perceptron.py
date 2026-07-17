@@ -1,71 +1,147 @@
+"""
+Task 4 & 5: Single Layer Perceptron implemented from scratch.
+
+    z    = w^T x + b
+    y^   = f(z)                (step activation)
+    w    = w + eta * (y - y^) * x
+    b    = b + eta * (y - y^)
+"""
+
 import numpy as np
 
-class Perceptron:
 
-    def __init__(self, learning_rate=0.01, epochs = 50):
+class Perceptron:
+    """Single layer perceptron using the step activation function."""
+
+    def __init__(self, learning_rate=0.01, epochs=50, verbose=True):
 
         self.learning_rate = learning_rate
         self.epochs = epochs
+        self.verbose = verbose
 
-    # initially, weights and bias don't exist because we don't know YET how many features there are
+        # Weights and bias are unknown until we see the feature count.
         self.weights = None
         self.bias = None
-
-    def step_activation(self,z):
-
-        if z >= 0:
-            return 1
-        return 0
-    
-    def predict_sample(self,x):
-
-        # basically applying the formula here. then, according to the previous function, if z turns out to be > 0, output = 1, else output = 0
-        z = np.dot(x,self.weights) + self.bias
-        return self.step_activation(z)
-    
-    def fit(self,X,y):
-
-        self.weights = np.zeros(X.shape[1])
-        self.bias = 0
 
         self.errors = []
         self.weight_history = []
         self.bias_history = []
+        self.converged_epoch = None
+
+    # ------------------------------------------------------------------
+    # Activation
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def step_activation(z):
+        """Step activation: returns 1 if z >= 0, else 0."""
+
+        return 1 if z >= 0 else 0
+
+    # ------------------------------------------------------------------
+    # Forward propagation
+    # ------------------------------------------------------------------
+
+    def predict_sample(self, x):
+        """Forward pass for a single sample."""
+
+        z = np.dot(x, self.weights) + self.bias
+        return self.step_activation(z)
+
+    def predict(self, X):
+        """Forward pass for a batch of samples."""
+
+        return np.array([self.predict_sample(x) for x in X])
+
+    # ------------------------------------------------------------------
+    # Training
+    # ------------------------------------------------------------------
+
+    def fit(self, X, y):
+        """Train using the perceptron learning rule."""
+
+        X = np.asarray(X, dtype=float)
+        y = np.asarray(y, dtype=int)
+
+        # Weight and bias initialization
+        self.weights = np.zeros(X.shape[1])
+        self.bias = 0.0
+
+        self.errors = []
+        self.weight_history = []
+        self.bias_history = []
+        self.converged_epoch = None
+
+        if self.verbose:
+            print("=" * 60)
+            print(f"TASK 5: TRAINING  (eta = {self.learning_rate}, "
+                  f"epochs = {self.epochs})")
+            print("=" * 60)
 
         for epoch in range(self.epochs):
 
             errors = 0
 
-            # every iteration x_i -> one training example, gives target - it's correct class
-            for x_i, target in zip(X,y):
+            # x_i -> one training example, target -> its true class
+            for x_i, target in zip(X, y):
+
                 prediction = self.predict_sample(x_i)
 
-                # if prediction is correct, then: target = 1, prediction = 1, update = 0.
+                # If the prediction is correct, update == 0 and nothing moves.
                 update = self.learning_rate * (target - prediction)
-                
-                # if prediction is wrong, then weights change
+
                 self.weights += update * x_i
                 self.bias += update
 
-                if update != 0:
+                if update != 0.0:
                     errors += 1
 
             self.errors.append(errors)
             self.weight_history.append(self.weights.copy())
             self.bias_history.append(self.bias)
 
-            print(f"Epoch {epoch + 1}/{self.epochs}")
-            print(f"Errors: {errors}")
-            print(f"Weights: {self.weights}")
-            print(f"Bias: {self.bias}")
-            print("-" * 40)
+            if errors == 0 and self.converged_epoch is None:
+                self.converged_epoch = epoch + 1
 
-    def predict(self, X):
+            if self.verbose:
+                weight_str = ", ".join(f"{w:+.4f}" for w in self.weights)
+                print(f"Epoch {epoch + 1:>3}/{self.epochs}  | "
+                      f"Misclassified: {errors:>4}  | "
+                      f"Weights: [{weight_str}]  | "
+                      f"Bias: {self.bias:+.4f}")
 
-        predictions = []
+        if self.verbose:
+            if self.converged_epoch is not None:
+                print(f"\nConverged at epoch {self.converged_epoch} "
+                      f"(zero misclassifications).")
+            else:
+                print("\nDid not reach zero training errors within the "
+                      "epoch budget.")
 
-        for x in X:
-            predictions.append(self.predict_sample(x))
+        return self
 
-        return np.array(predictions)
-    
+    # ------------------------------------------------------------------
+    # Reporting helpers
+    # ------------------------------------------------------------------
+
+    def epoch_table(self):
+        """
+        Epoch-wise learning table (Section 8).
+
+        Returns a list of dicts: epoch, errors, each weight, bias.
+        """
+
+        rows = []
+
+        for i, (errors, w, b) in enumerate(
+            zip(self.errors, self.weight_history, self.bias_history), start=1
+        ):
+            row = {"epoch": i, "errors": errors}
+
+            for j, wj in enumerate(w, start=1):
+                row[f"weight_{j}"] = wj
+
+            row["bias"] = b
+            rows.append(row)
+
+        return rows
