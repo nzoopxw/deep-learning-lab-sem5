@@ -27,7 +27,11 @@ class Perceptron:
 
         self.weights = np.zeros(X.shape[1])
         self.bias = 0
+
         self.errors = []
+        self.weight_history = []
+        self.bias_history = []
+
         for epoch in range(self.epochs):
 
             errors = 0
@@ -47,6 +51,9 @@ class Perceptron:
                     errors += 1
 
             self.errors.append(errors)
+            self.weight_history.append(self.weights.copy())
+            self.bias_history.append(self.bias)
+
             print(f"Epoch {epoch + 1}/{self.epochs}")
             print(f"Errors: {errors}")
             print(f"Weights: {self.weights}")
