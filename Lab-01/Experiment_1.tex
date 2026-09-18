@@ -1,0 +1,394 @@
+
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,array,longtable}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{titlesec}
+
+\begin{document}
+
+\begin{center}
+\Large\textbf{Shiv Nadar University Chennai}\\[2mm]
+\end{center}
+
+\renewcommand{\arraystretch}{1.4}
+
+\begin{tabular}{|p{3.5cm}|p{8cm}|p{2cm}|}
+\hline
+Degree \& Branch & B.Tech Artificial Intelligence \& Data Science & Semester V\\ \hline
+Subject Code \& Name & CS3807 -- Deep Learning Laboratory & AY: 2026--27\\ \hline
+\end{tabular}
+
+\vspace{3mm}
+
+\begin{center}
+\Large\textbf{Experiment 1}\\
+\large\textbf{Implementation of a Single Layer Perceptron for Binary Classification}
+\end{center}
+
+%----------------------------------------------------------
+
+\section*{1. Objective}
+
+The objective of this experiment is to understand the concept of an artificial neuron and implement a Single Layer Perceptron from scratch for binary classification. Students will learn the perceptron learning algorithm, understand the importance of activation functions, visualize the learning process, and evaluate the classifier using a real-world dataset.
+
+%----------------------------------------------------------
+
+\section*{2. Tasks to be Performed}
+
+\begin{enumerate}[leftmargin=*]
+\item Download and understand the dataset.
+\item Perform Exploratory Data Analysis (EDA).
+\item Preprocess the dataset.
+\item Implement a Single Layer Perceptron from scratch.
+\item Train the model using the perceptron learning rule.
+\item Evaluate the classifier using standard performance metrics.
+\item Analyze the effect of different learning rates.
+\item Compare the implementation with Scikit-learn's Perceptron (optional).
+\end{enumerate}
+
+%----------------------------------------------------------
+
+\section*{3. Background Theory}
+
+An Artificial Neuron is the fundamental building block of a neural network. It receives one or more input features, multiplies them by corresponding weights, adds a bias term, and applies an activation function to determine the output.
+
+The Single Layer Perceptron is the earliest supervised learning algorithm capable of solving linearly separable binary classification problems.
+
+\subsection*{Mathematical Formulation}
+
+Weighted Sum
+
+\[
+z=\mathbf{w}^{T}\mathbf{x}+b
+\]
+
+where
+
+\begin{itemize}
+\item $\mathbf{x}$ : Input vector
+\item $\mathbf{w}$ : Weight vector
+\item $b$ : Bias
+\item $z$ : Linear combination
+\end{itemize}
+
+Prediction
+
+\[
+\hat y=f(z)
+\]
+
+Weight Update Rule
+
+\[
+\mathbf{w}_{new}
+=
+\mathbf{w}_{old}
++
+\eta
+(y-\hat y)
+\mathbf{x}
+\]
+
+Bias Update
+
+\[
+b_{new}
+=
+b_{old}
++
+\eta
+(y-\hat y)
+\]
+
+where $\eta$ denotes the learning rate.
+
+%----------------------------------------------------------
+
+\section*{4. Activation Functions}
+
+An activation function determines the output of a neuron based on the weighted sum of its inputs. It introduces non-linearity, enabling neural networks to learn complex patterns. Although the perceptron uses only the Step Activation Function, modern deep learning models employ differentiable activation functions for efficient optimization through backpropagation.
+
+\subsection*{Step Activation Function}
+
+\[
+f(z)=
+\begin{cases}
+1,&z\ge0\\
+0,&z<0
+\end{cases}
+\]
+
+The Step Activation Function produces a binary output and is therefore suitable only for linearly separable binary classification problems.
+
+\begin{center}
+\begin{tabular}{|p{2.5cm}|p{3cm}|p{6cm}|}
+\hline
+\textbf{Activation} & \textbf{Output Range} & \textbf{Typical Applications}\\
+\hline
+Step & $\{0,1\}$ & Classical Perceptron\\
+\hline
+Sigmoid & $(0,1)$ & Binary Classification Output Layer\\
+\hline
+Tanh & $(-1,1)$ & Hidden Layers (Traditional Networks)\\
+\hline
+ReLU & $[0,\infty)$ & Hidden Layers in CNNs and MLPs\\
+\hline
+Leaky ReLU & $(-\infty,\infty)$ & Avoiding Dying ReLU\\
+\hline
+Softmax & $(0,1)$ & Multi-class Classification Output Layer\\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Note:} This experiment uses only the Step Activation Function. The remaining activation functions will be studied in subsequent experiments involving Multilayer Perceptrons and Deep Neural Networks.
+
+%----------------------------------------------------------
+
+\section*{5. Dataset Description}
+
+\textbf{Dataset:} Banknote Authentication Dataset
+
+\textbf{Source:} UCI Machine Learning Repository
+
+\textbf{Download Link:}
+
+\url{https://archive.ics.uci.edu/dataset/267/banknote+authentication}
+
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+Instances & 1372\\
+\hline
+Features & 4 Numerical Features\\
+\hline
+Classes & 2\\
+\hline
+Missing Values & None\\
+\hline
+Task & Binary Classification\\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Feature Description}
+
+\begin{itemize}
+\item Variance
+\item Skewness
+\item Curtosis
+\item Entropy
+\end{itemize}
+
+Target Class
+
+\begin{itemize}
+\item 0 -- Authentic Banknote
+\item 1 -- Forged Banknote
+\end{itemize}
+
+%----------------------------------------------------------
+
+\section*{6. Experimental Procedure}
+
+\textbf{Task 1: Dataset Exploration}
+
+\begin{itemize}
+\item Load the dataset.
+\item Display the first five samples.
+\item Determine dataset dimensions.
+\item Identify missing values.
+\item Display descriptive statistics.
+\end{itemize}
+
+\textbf{Expected Output}
+
+Dataset summary and statistical information.
+
+\vspace{2mm}
+
+\textbf{Task 2: Exploratory Data Analysis}
+
+Generate
+
+\begin{itemize}
+\item Histograms
+\item Correlation Heatmap
+\item Scatter Plot
+\item Boxplots
+\end{itemize}
+
+\vspace{2mm}
+
+\textbf{Task 3: Data Preprocessing}
+
+\begin{itemize}
+\item Normalize all numerical features.
+\item Split the dataset into Training (80\%) and Testing (20\%).
+\end{itemize}
+
+\vspace{2mm}
+
+\textbf{Task 4: Perceptron Implementation}
+
+Implement from scratch
+
+\begin{itemize}
+\item Weight Initialization
+\item Bias Initialization
+\item Step Activation Function
+\item Forward Propagation
+\item Perceptron Learning Rule
+\end{itemize}
+
+\vspace{2mm}
+
+\textbf{Task 5: Model Training}
+
+Display
+
+\begin{itemize}
+\item Epoch Number
+\item Misclassified Samples
+\item Updated Weights
+\item Updated Bias
+\end{itemize}
+
+\vspace{2mm}
+
+\textbf{Task 6: Model Evaluation}
+
+Compute
+
+\begin{itemize}
+\item Accuracy
+\item Precision
+\item Recall
+\item F1-score
+\item Confusion Matrix
+\end{itemize}
+
+%----------------------------------------------------------
+
+\section*{7. Mandatory Plots}
+
+\begin{longtable}{|p{3.4cm}|p{3.4cm}|p{6cm}|}
+\hline
+\textbf{Plot} & \textbf{Purpose} & \textbf{Expected Inference}\\
+\hline
+Feature Histograms & Distribution Analysis & Identify skewness and outliers.\\
+\hline
+Correlation Heatmap & Feature Relationship & Observe highly correlated features.\\
+\hline
+Scatter Plot & Class Distribution & Determine whether classes are approximately linearly separable.\\
+\hline
+Training Error vs Epoch & Learning Behaviour & Verify convergence of the perceptron.\\
+\hline
+Weight Evolution & Parameter Analysis & Observe stabilization of learned weights.\\
+\hline
+Bias Evolution & Parameter Analysis & Understand the role of the bias term.\\
+\hline
+Confusion Matrix & Performance Evaluation & Interpret TP, FP, TN and FN.\\
+\hline
+Learning Rate Comparison & Hyperparameter Study & Compare convergence behaviour for different learning rates.\\
+\hline
+Decision Boundary (Optional) & Visualization & Illustrate the separating hyperplane using two selected features.\\
+\hline
+\end{longtable}
+
+Students should provide a brief interpretation (2--3 sentences) for every generated plot.
+
+%----------------------------------------------------------
+
+\section*{8. Performance Tables}
+
+\textbf{Training Summary}
+
+\begin{tabular}{|p{6cm}|p{7cm}|}
+\hline
+Dataset Size &\\
+\hline
+Train/Test Split &\\
+\hline
+Learning Rate &\\
+\hline
+Epochs &\\
+\hline
+Final Weights &\\
+\hline
+Final Bias &\\
+\hline
+Accuracy &\\
+\hline
+Precision &\\
+\hline
+Recall &\\
+\hline
+F1-score &\\
+\hline
+\end{tabular}
+
+\vspace{3mm}
+
+\textbf{Epoch-wise Learning}
+
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Epoch & Errors & Weight 1 & Weight 2 & Bias\\
+\hline
+&&&&\\
+&&&&\\
+&&&&\\
+\hline
+\end{tabular}
+
+%----------------------------------------------------------
+
+\section*{9. Additional Tasks}
+
+\begin{enumerate}[leftmargin=*]
+\item Compare the Step and Sigmoid activation functions. Discuss why the Step Activation Function is not used in modern deep learning models.
+\item Compare the implementation with Scikit-learn's Perceptron.
+\item Repeat the experiment using learning rates 0.001, 0.01 and 0.1.
+\item Explain why a Single Layer Perceptron cannot solve the XOR problem.
+\item Study the effect of feature normalization on model convergence.
+\end{enumerate}
+
+%----------------------------------------------------------
+
+\section*{10. Report Contents}
+
+The report should include:
+
+\begin{itemize}
+\item Objective
+\item Background Theory
+\item Activation Functions
+\item Dataset Description
+\item Experimental Procedure
+\item Source Code
+\item Experimental Results
+\item Generated Plots with Interpretation
+\item Performance Tables
+\item Discussion
+\item Conclusion
+\item References
+\end{itemize}
+
+%----------------------------------------------------------
+
+\section*{11. References}
+
+\begin{enumerate}
+\item F. Rosenblatt, ``The Perceptron,'' \emph{Psychological Review}, 1958.
+\item I. Goodfellow, Y. Bengio and A. Courville, \emph{Deep Learning}, MIT Press, 2016.
+\item C. M. Bishop, \emph{Pattern Recognition and Machine Learning}, Springer, 2006.
+\item S. Haykin, \emph{Neural Networks and Learning Machines}, Pearson, 2009.
+\item UCI Machine Learning Repository -- Banknote Authentication Dataset.
+\item Scikit-learn Documentation: Perceptron.
+\end{enumerate}
+
+\end{document}
+

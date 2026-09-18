@@ -64,4 +64,7 @@ environment.
   images to keep 5-fold cross-validation tractable; the best configuration is
   then retrained on the full training set.
 - Precision, recall, and F1 are macro-averaged across the 10 classes.
+<<<<<<< HEAD
 
+=======
+>>>>>>> 847dcc1 (upload everything)
